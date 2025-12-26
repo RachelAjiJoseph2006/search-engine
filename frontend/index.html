@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RAG Search</title>
+    <link rel="stylesheet" href="front.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1 class="logo">
+        <span class="blue">D</span><span class="red">e</span><span class="yellow">a</span>
+        <span class="blue">d</span><span class="green">a</span><span class="red">s</span>
+        <span class="blue">s</span><span class="green">.</span>
+    </h1>
+
+    <!-- Search + Upload -->
+    <div class="search-box">
+
+        <!-- 🔍 SEARCH (ONLY input + icon) -->
+        <div class="search-wrapper">
+            <input
+                type="text"
+                id="questionInput"
+                placeholder="Ask something from your PDF..."
+            >
+            <button id="askBtn" class="circle-btn">🔍</button>
+        </div>
+
+        <!-- 📄 UPLOAD (SEPARATE BLOCK) -->
+        <div class="upload-box">
+            <input type="file" id="pdfInput" hidden>
+            <button id="uploadBtn" class="btn secondary">Upload PDF</button>
+            <p id="uploadStatus"></p>
+        </div>
+
+    </div>
+
+    <div id="answerSection"></div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

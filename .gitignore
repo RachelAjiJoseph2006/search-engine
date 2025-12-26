@@ -1,0 +1,17 @@
+# ===== Python =====
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ===== Environment variables =====
+.env
+
+# ===== OS junk =====
+.DS_Store
+Thumbs.db
+
+# ===== Node / frontend junk (just in case) =====
+node_modules/
