@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  backend:
+    build: .
+    container_name: fastapi-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+
+  frontend:
+    build: ./deadass-react
+    container_name: react-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./deadass-react:/app
+      - /app/node_modules
