@@ -1,0 +1,11 @@
+# .dockerignore
+**/venv
+**/__pycache__
+**/*.pyc
+**/data
+**/.git
+**/.env
+
+# Kill off the frontend leaks
+**/deadass-react
+**/node_modules

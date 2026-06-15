@@ -17,11 +17,9 @@ faiss_index = None
 chunks = []
 app = FastAPI()
 api_key = os.getenv("API_KEY")
-print(api_key)
 model = SentenceTransformer("all-MiniLM-L6-v2")
 client = Groq(api_key=api_key)
 
-print("hi this is rachel")
 
 
 

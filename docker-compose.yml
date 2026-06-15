@@ -1,19 +1,19 @@
-version: "3.9"
-
 services:
   backend:
-    build: .
+    build: ./backend
     container_name: fastapi-backend
     ports:
       - "8000:8000"
+    env_file:
+      - ./backend/.env            # <-- Tells Docker to load these variables
     volumes:
-      - .:/app
+      - ./backend:/app
 
   frontend:
     build: ./deadass-react
     container_name: react-frontend
     ports:
-      - "5173:5173"
+      - "5173:5173"   # <-- Tells Docker to load these variables
     volumes:
       - ./deadass-react:/app
       - /app/node_modules
