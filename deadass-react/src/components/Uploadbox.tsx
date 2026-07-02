@@ -21,7 +21,7 @@ function UploadBox() {
 
     try {
       const res = await fetch(
-        "http://localhost:8000/input",
+        "https://racheljoseph-webdev-backend.azurewebsites.net/input",
         {
           method: "POST",
           body: formData,

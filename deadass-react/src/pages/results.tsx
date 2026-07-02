@@ -40,7 +40,7 @@ function Results() {
     async function fetchResults() {
       const res =
         await fetch(
-          `http://localhost:8000/rag?query=${encodeURIComponent(
+          `https://racheljoseph-webdev-backend.azurewebsites.net/rag?query=${encodeURIComponent(
             query ?? ""
           )}`
         );
