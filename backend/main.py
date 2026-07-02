@@ -17,7 +17,7 @@ faiss_index = None
 chunks = []
 app = FastAPI()
 api_key = os.getenv("API_KEY")
-model = SentenceTransformer("all-MiniLM-L6-v2")
+model = None
 client = Groq(api_key=api_key)
 
 
@@ -25,13 +25,17 @@ client = Groq(api_key=api_key)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173"
-    ],  # allow this origin to make requests
+    allow_origins=["*"],  # allow this origin to make requests
     allow_credentials=True,
     allow_methods=["*"],      # allow GET, POST, etc.
     allow_headers=["*"],      # allow headers
 )
+
+def get_model():
+    global model
+    if model is None:
+        model = SentenceTransformer("all-MiniLM-L6-v2")
+    return model
 
 def generate_answer(prompt: str) -> str:
     try:
@@ -97,11 +101,13 @@ def rag_answer(question):
 
 
 def embed_chunks(chunks):
+    model = get_model()
     embeddings = model.encode(chunks)
     return np.array(embeddings).astype("float32")
 
 
-def embed_text(text: str) -> np.ndarray:
+def embed_text(text: str):
+    model = get_model()
     embedding = model.encode([text])
     return np.array(embedding).astype("float32")
 
@@ -149,7 +155,9 @@ def search_similar_chunks(query, top_k=3):
         return []
 
     # 1. Embed query
+    model = get_model()
     query_vec = embed_text(query)
+
 
     # 2. Search FAISS
     distances, indices = faiss_index.search(query_vec, k=top_k)
@@ -200,6 +208,7 @@ def search(query: str):
     if faiss_index is None:
         return {"error": "Upload a PDF first"}
 
+    model = get_model()
     query_vec = model.encode([query]).astype("float32")
     distances, indices = faiss_index.search(query_vec, k=3)
 
