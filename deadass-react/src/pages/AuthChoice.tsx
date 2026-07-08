@@ -20,7 +20,7 @@ function AuthChoice() {
 
     onSuccess: async (codeResponse) => {
       try {
-        const response = await fetch("http://localhost:8000/auth/google", {
+        const response = await fetch("https://racheljoseph-webdev-backend.azurewebsites.net/auth/google", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
