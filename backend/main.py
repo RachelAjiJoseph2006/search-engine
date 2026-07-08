@@ -29,7 +29,10 @@ CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # allow this origin to make requests
+    allow_origins=[
+        "https://racheljoseph-webdev-frontend.azurewebsites.net",
+        "http://localhost:5173"
+    ],
     allow_credentials=True,
     allow_methods=["*"],      # allow GET, POST, etc.
     allow_headers=["*"],      # allow headers
