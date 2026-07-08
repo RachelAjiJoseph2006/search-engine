@@ -31,6 +31,7 @@ function Results() {
   const query =
     searchParams.get("q");
 
+  const [question, setQuestion] = useState(query ?? "");
   const [data, setData] =
     useState<RagResponse | null>(
       null
@@ -66,11 +67,14 @@ function Results() {
   <div className="results-page">
     <div className="results-container">
       <div className="results-search-row">
-      <Link to="/" className="logo results-d">
+      <Link to="/search" className="logo results-d">
         <span>D</span>
       </Link>
 
-      <SearchBar />
+      <SearchBar
+        question={question}
+        setQuestion={setQuestion}
+      />
     </div>
 
 

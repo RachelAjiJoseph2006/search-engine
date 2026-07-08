@@ -1,4 +1,5 @@
-from fastapi import FastAPI, UploadFile, File, Query
+from fastapi import FastAPI, UploadFile, File, Query,APIRouter, HTTPException
+from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer
 import numpy as np
 import os
@@ -10,6 +11,9 @@ import pickle
 from groq import Groq
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+from google.oauth2 import id_token
+from google.auth.transport import requests as grequests
+
 
 load_dotenv()
 
@@ -20,8 +24,8 @@ api_key = os.getenv("API_KEY")
 model = None
 client = Groq(api_key=api_key)
 
-
-
+CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,6 +34,43 @@ app.add_middleware(
     allow_methods=["*"],      # allow GET, POST, etc.
     allow_headers=["*"],      # allow headers
 )
+
+class GoogleLoginRequest(BaseModel):
+    code: str
+
+@app.post("/auth/google")
+def google_login(req: GoogleLoginRequest):
+
+    token_response = requests.post(
+        "https://oauth2.googleapis.com/token",
+        data={
+            "code": req.code,
+            "client_id": CLIENT_ID,
+            "client_secret": CLIENT_SECRET,
+            "redirect_uri": "postmessage",
+            "grant_type": "authorization_code",
+        },
+    )
+
+    if token_response.status_code != 200:
+        raise HTTPException(400, "Failed to exchange code")
+
+    tokens = token_response.json()
+
+    idinfo = id_token.verify_oauth2_token(
+        tokens["id_token"],
+        grequests.Request(),
+        CLIENT_ID,
+    )
+
+    return {
+        "success": True,
+        "user": {
+            "email": idinfo["email"],
+            "name": idinfo.get("name"),
+            "picture": idinfo.get("picture"),
+        }
+    }
 
 def get_model():
     global model
@@ -184,24 +225,6 @@ def load_index():
     else:
         print("No FAISS index found")
 
-
-# @app.get("/search")
-# def search(query: str = Query(...)):
-#     if faiss_index is None:
-#         return {"error": "No index found. Upload a PDF first."}
-
-#     query_vector = embed_text(query)
-#     distances, indices = faiss_index.search(query_vector, k=3)
-#     results = []
-#     for idx, score in zip(indices[0], distances[0]):
-#         results.append({
-#             "chunk": chunks[idx],
-#             "score": float(score)
-#         })
-#     return {
-#         "query": query,
-#         "results": results
-#     }
 
 @app.get("/search")
 def search(query: str):

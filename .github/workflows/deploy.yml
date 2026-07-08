@@ -28,6 +28,7 @@ jobs:
       - name: Build frontend
         run: |
           docker build \
+            --build-arg VITE_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
             -t $DOCKER_USER/webdev-frontend:latest \
             ./deadass-react
 
@@ -41,6 +42,14 @@ jobs:
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Configure backend environment variables
+        run: |
+          az webapp config appsettings set \
+            --resource-group my-rg \
+            --name racheljoseph-webdev-backend \
+            --settings \
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
 
       - name: Restart backend
         run: |
